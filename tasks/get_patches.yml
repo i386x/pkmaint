@@ -1,0 +1,11 @@
+# SPDX-License-Identifier: MIT
+---
+
+- name: Copy the patch from host
+  copy:
+    src: "{{ patch_item }}"
+    dest: "/home/{{ __pkmaint_mockuser_fact }}/rpmbuild/SOURCES/{{ patch_item
+      }}"
+    group: "{{ __pkmaint_mockuser_fact }}"
+    owner: "{{ __pkmaint_mockuser_fact }}"
+    force: yes

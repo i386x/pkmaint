@@ -1,0 +1,21 @@
+# SPDX-License-Identifier: MIT
+---
+
+galaxy_info:
+  author: Jiří Kučera <sanczes@gmail.com>
+  description: Help with package maintaining tasks on Fedora based systems
+  license: MIT
+  min_ansible_version: 2.6
+  platforms:
+    - name: Fedora
+      versions:
+        - all
+    - name: EL
+      versions:
+        - 8
+  galaxy_tags:
+    - fedora
+    - maintenance
+    - package
+    - rhel
+    - testing

@@ -1,0 +1,61 @@
+# SPDX-License-Identifier: MIT
+---
+
+- name: Fetch the source from URL
+  get_url:
+    url: "{{ source_item.source }}"
+    dest: "/home/{{ __pkmaint_mockuser_fact }}/rpmbuild/SOURCES/{{
+      source_item.creates }}"
+    group: "{{ __pkmaint_mockuser_fact }}"
+    owner: "{{ __pkmaint_mockuser_fact }}"
+    force: no
+  when:
+    - source_item.type == 'url'
+
+- name: Copy the source from host
+  copy:
+    src: "{{ source_item.source }}"
+    dest: "/home/{{ __pkmaint_mockuser_fact }}/rpmbuild/SOURCES/{{
+      source_item.creates }}"
+    group: "{{ __pkmaint_mockuser_fact }}"
+    owner: "{{ __pkmaint_mockuser_fact }}"
+    force: no
+  when:
+    - source_item.type == 'file'
+
+- name: Run a command to get the source
+  command:
+    cmd: "{{ source_item.source }}"
+    creates: "/home/{{ __pkmaint_mockuser_fact }}/rpmbuild/SOURCES/{{
+      source_item.creates }}"
+  when:
+    - source_item.type == 'command'
+
+- name: Create a script to get the source
+  template:
+    src: "{{ source_item.source }}.j2"
+    dest: "/home/{{ __pkmaint_mockuser_fact }}/rpmbuild/SOURCES/{{
+      source_item.source }}"
+    mode: a+x
+    group: "{{ __pkmaint_mockuser_fact }}"
+    owner: "{{ __pkmaint_mockuser_fact }}"
+    force: yes
+  when:
+    - source_item.type == 'script'
+
+- name: Run the script to get the source
+  command:
+    cmd: "/home/{{ __pkmaint_mockuser_fact }}/rpmbuild/SOURCES/{{
+      source_item.source }}"
+    creates: "/home/{{ __pkmaint_mockuser_fact }}/rpmbuild/SOURCES/{{
+      source_item.creates }}"
+  when:
+    - source_item.type == 'script'
+
+- name: Assign the proper attributes to the source
+  file:
+    path: "/home/{{ __pkmaint_mockuser_fact }}/rpmbuild/SOURCES/{{
+      source_item.creates }}"
+    group: "{{ __pkmaint_mockuser_fact }}"
+    owner: "{{ __pkmaint_mockuser_fact }}"
+    state: file

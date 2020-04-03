@@ -1,0 +1,23 @@
+# SPDX-License-Identifier: MIT
+---
+
+- name: Create {{ item.name }}.spec
+  template:
+    dest: "/home/{{ __pkmaint_mockuser_fact }}/rpmbuild/SPECS/{{ item.name
+      }}.spec"
+    src: "{{ item.name }}.spec.j2"
+    group: "{{ __pkmaint_mockuser_fact }}"
+    owner: "{{ __pkmaint_mockuser_fact }}"
+    force: yes
+
+- name: Get {{ item.name }}'s sources
+  include_tasks: get_sources.yml
+  loop: "{{ item.sources }}"
+  loop_control:
+    loop_var: source_item
+
+- name: Get {{ item.name }}'s patches
+  include_tasks: get_patches.yml
+  loop: "{{ item.patches }}"
+  loop_control:
+    loop_var: patch_item

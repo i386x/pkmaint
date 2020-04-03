@@ -1,0 +1,122 @@
+# SPDX-License-Identifier: MIT
+---
+
+# Environment variable that contain a path to a file with image specific
+# variables:
+pkmaint_envvar_imagevarsfile: null
+
+# Variables to be read from file found at location given by enviromnment
+# variable named {{ pkmaint_envvar_imagevarsfile }}. These are OS specific,
+# so they should be placed to file next to the image.
+
+# OS image distribution (e.g. Fedora):
+pkmaint_distro: null
+
+# OS image release version number (e.g. 31):
+pkmaint_releasever: null
+
+# OS image architecture (e.g. x86_64):
+pkmaint_basearch: null
+
+# mock configuration to be used for building packages (e.g.
+# "fedora-{{ pkmaint_releasever }}-{{ pkmaint_basearch }}"):
+pkmaint_mock_config: null
+
+# List of dictionaries characterizing OS image related repositories; a keys
+# in a dictionary has same meaning as their equivalents from yum_repository
+# module; example with all supported keys:
+#
+#   pkmaint_baserepos:
+#     - name: MyRepo
+#       description: "My repository"
+#       baseurl: "https://repocloud.foo/MyRepo"
+#       gpgcheck: no
+#       enabled: yes
+#
+pkmaint_baserepos: []
+
+# List of basic packages (needed for every build), example:
+#
+#   pkmaint_basepackages:
+#     - gcc
+#     - gcc-c++
+#     - gzip
+#     - xz
+#
+pkmaint_basepackages: []
+
+# Following variables are case specific. They should be placed to playbook.
+
+# List of additional repositories:
+pkmaint_customrepos: []
+
+# List of additional packages:
+pkmaint_custompackages: []
+
+# List of users to be created. One item can be either string or dictionary.
+# Strings are treated as user names, dictionaries can contain following keys:
+#
+#   name, uid, groups, append
+#
+# Keys have the same meaning as in user module. Example:
+#
+#   pkmaint_users:
+#     - joe
+#     - name: alice
+#       groups:
+#         - wheel
+#       append: yes
+#
+pkmaint_users: []
+
+# A name of user that can run mock:
+pkmaint_mockuser: null
+
+# A list of subjects for building/testing. One subject describe a package to be
+# build, installed, and tested. The structure of subject is
+#
+#   - name: "package_name"
+#     version: "package_version"
+#     release: "package_release_number"
+#     sources: [] # a list of sources, see below
+#     patches: [] # a list of patches
+#
+# Sources are represented as list of dictionaries, each dictionary provides
+# information how to get the final source. The structure of one source item is
+#
+#   - source: "URL, path or other; depends on 'type'"
+#     type: 'url' | 'file' | 'command' | 'script'
+#     creates: >
+#       final result path; if exists, the action of getting source will be
+#       skipped
+#
+# Example:
+#
+#   pkmaint_subjects:
+#     - name: "foo"
+#       version: 1.14
+#       release: 7
+#       sources:
+#         - source: "https://filecloud.foo/foo-1.14.tar.gz"
+#           type: 'url'
+#           creates: "foo-1.14.tar.gz"
+#         - source: "mv foo-1.14.tar.gz foo-temp-1.14.tar.gz"
+#           type: 'command'
+#           creates: "foo-temp-1.14.tar.gz"
+#         - source: "add-submodules.sh"
+#           type: 'script'
+#           creates: "foo-1.14.tar.gz"
+#       patches:
+#         - foo-1.14-fix-segfault.patch
+#
+pkmaint_subjects: []
+
+# A name of local repository:
+pkmaint_localrepo: null
+
+# A name of build script that is generated into mock user's home directory:
+pkmaint_buildscript: null
+
+# A name of script that updates local repository (created on guest). It is
+# installed to /usr/local/bin:
+pkmaint_updatelocalreposcript: null

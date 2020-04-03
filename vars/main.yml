@@ -1,0 +1,13 @@
+# SPDX-License-Identifier: MIT
+---
+
+__pkmaint_envvar_imagevarsfile: VMCFG_ANSIBLE_VARS
+__pkmaint_packages:
+  - mock
+  - createrepo
+__pkmaint_mockuser: mocker
+__pkmaint_localrepo: local
+__pkmaint_localreporoot: /local_repo
+__pkmaint_pkgsdirname: Packages
+__pkmaint_buildscript: build
+__pkmaint_updatelocalreposcript: updatelocalrepo
