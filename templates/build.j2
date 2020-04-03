@@ -17,7 +17,6 @@ pushd ${HOME}/rpmbuild/SRPMS
 mock -N -r {{ pkmaint_mock_config }} --resultdir=${HOME}/rpmbuild/RPMS \
   --rebuild "{{ pkg.name }}-{{ pkg.version }}-{{ pkg.release
     }}$(rpm --eval '%{?dist}').src.rpm"
-cp -vf ${HOME}/rpmbuild/RPMS/*.rpm ${HOME}/{{ __pkmaint_pkgsdirname }}
-rm -vf ${HOME}/rpmbuild/RPMS/*.rpm
+mv -vf ${HOME}/rpmbuild/RPMS/*.rpm ${HOME}/{{ __pkmaint_pkgsdirname }}
 {% endfor %}
 popd
