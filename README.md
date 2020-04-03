@@ -191,6 +191,9 @@ Next, you can create `setup.yml` playbook:
             creates: "{{ foo_tarball }}"
         patches:
           - foo-1.14-fix_segfault.patch
+
+  roles:
+    - pkmaint
 ```
 
 It is supposed that you have also `foo.spec.j2` along with `setup.yml` in your
