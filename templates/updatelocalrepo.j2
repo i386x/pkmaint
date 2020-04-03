@@ -3,7 +3,7 @@
 
 set -euox pipefail
 
-cp -vf /home/{{ __pkmaint_mockuser_fact }}/rpmbuild/RPMS/*.rpm {{
+cp -vf /home/{{ __pkmaint_mockuser_fact }}/{{ __pkmaint_pkgsdirname }}/*.rpm {{
   __pkmaint_localreporoot }}/{{ pkmaint_distro }}/{{ pkmaint_releasever }}/{{
   __pkmaint_localrepo_fact }}/{{ pkmaint_basearch }}/{{
   __pkmaint_pkgsdirname }}
