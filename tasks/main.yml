@@ -59,7 +59,7 @@
 
 - name: Create mock profiles
   template:
-    dest: /etc/mock/{{ item.name }}.conf
+    dest: /etc/mock/{{ item.name }}.cfg
     src: "{{ __pkmaint_mockprofile }}.j2"
     force: yes
     backup: yes
