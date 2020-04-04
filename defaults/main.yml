@@ -32,16 +32,21 @@ pkmaint_mock_config: null
 #         chroot_setup_cmd: "..."
 #         root: "..."
 #         target_arch: "..."
+#         legal_host_arches: "( 'arch1', 'arch2', ... )"
 #         dist: "..."
 #         releasever: "..."
+#         bootstrap_image: "..."
 #         package_manager: "(default is dnf)"
+#         dnf_install_command: "..."
 #       package_manager_conf: >
 #         a name of package manager config (defaul is dnf.conf)
 #       module_platform_id: "module_platform_id value in package_manager_conf"
-#       # List of repositories in package_manager_conf
+#       # List of repositories in package_manager_conf. Name of keys coincides
+#       # with dnf.conf, see man dnf.conf. Supported keys are:
 #       repos:
 #         - name: "..."
 #           baseurl: "..."
+#           module_hotfixes: <boolean>
 #
 pkmaint_mock_profiles: []
 

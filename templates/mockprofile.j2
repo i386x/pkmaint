@@ -14,11 +14,17 @@ config_opts['root'] = '{{ item.config_opts.root }}'
 {% if 'target_arch' in item.config_opts %}
 config_opts['target_arch'] = '{{ item.config_opts.target_arch }}'
 {% endif %}
+{% if 'legal_host_arches' in item.config_opts %}
+config_opts['legal_host_arches'] = {{ item.config_opts.legal_host_arches }}
+{% endif %}
 {% if 'dist' in item.config_opts %}
 config_opts['dist'] = '{{ item.config_opts.dist }}'
 {% endif %}
 {% if 'releasever' in item.config_opts %}
 config_opts['releasever'] = '{{ item.config_opts.releasever }}'
+{% endif %}
+{% if 'bootstrap_image' in item.config_opts %}
+config_opts['bootstrap_image'] = '{{ item.config_opts.bootstrap_image }}'
 {% endif %}
 {% endif %}
 
@@ -26,6 +32,9 @@ config_opts['releasever'] = '{{ item.config_opts.releasever }}'
 config_opts['package_manager'] = '{{ item.config_opts.package_manager }}'
 {% else %}
 config_opts['package_manager'] = 'dnf'
+{% endif %}
+{% if 'config_opts' in item and 'dnf_install_command' in item.config_opts %}
+config_opts['dnf_install_command'] = '{{ item.config_opts.dnf_install_command }}'
 {% endif %}
 
 {% if 'package_manager_conf' in item %}
@@ -52,14 +61,17 @@ strict=1
 {% if 'module_platform_id' in item %}
 module_platform_id={{ item.module_platform_id }}
 {% endif %}
+protected_packages=
 
 # repos
-
 {% if 'repos' in item %}
 {% for repo in item.repos %}
 [{{ repo.name }}]
 name={{ repo.name }}
 baseurl={{ repo.baseurl }}
+{% if 'module_hotfixes' in repo %}
+module_hotfixes={{ module_hotfixes }}
+{% endif %}
 
 {% endfor %}
 {% endif %}
