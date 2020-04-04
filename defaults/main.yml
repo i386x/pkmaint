@@ -33,6 +33,12 @@ pkmaint_mock_config: null
 #       gpgcheck: no
 #       enabled: yes
 #
+# Repositories can be also installed from packages. To do this, use 'package'
+# key:
+#
+#   pkmaint_baserepos:
+#     - package: foo-repos
+#
 pkmaint_baserepos: []
 
 # List of basic packages (needed for every build), example:

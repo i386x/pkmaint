@@ -36,13 +36,7 @@
       ) | length > 0
 
 - name: Initialize base repositories
-  yum_repository:
-    name: "{{ item.name }}"
-    description: "{{ item.description | default(item.name) }}"
-    baseurl: "{{ item.baseurl }}"
-    gpgcheck: "{{ item.gpgcheck | default(false) }}"
-    enabled: "{{ item.enabled | default(true) }}"
-    state: present
+  include_tasks: init_repos.yml
   loop: "{{ pkmaint_baserepos }}"
 
 - name: Install base packages
@@ -53,13 +47,7 @@
     - pkmaint_basepackages | length > 0
 
 - name: Initialize custom repositories
-  yum_repository:
-    name: "{{ item.name }}"
-    description: "{{ item.description | default(item.name) }}"
-    baseurl: "{{ item.baseurl }}"
-    gpgcheck: "{{ item.gpgcheck | default(false) }}"
-    enabled: "{{ item.enabled | default(true) }}"
-    state: present
+  include_tasks: init_repos.yml
   loop: "{{ pkmaint_customrepos }}"
 
 - name: Install custom packages
