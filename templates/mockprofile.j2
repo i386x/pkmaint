@@ -70,7 +70,7 @@ protected_packages=
 name={{ repo.name }}
 baseurl={{ repo.baseurl }}
 {% if 'module_hotfixes' in repo %}
-module_hotfixes={{ module_hotfixes }}
+module_hotfixes={{ repo.module_hotfixes }}
 {% endif %}
 
 {% endfor %}
