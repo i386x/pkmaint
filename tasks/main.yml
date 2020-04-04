@@ -112,7 +112,7 @@
     baseurl: "file://{{ __pkmaint_localreporoot }}/{{ pkmaint_distro }}/{{
       pkmaint_releasever }}/{{ __pkmaint_localrepo_fact }}/{{
       pkmaint_basearch }}"
-    enabled: yes
+    enabled: no
     gpgcheck: no
     priority: 1
     protect: yes

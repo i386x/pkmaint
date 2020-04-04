@@ -230,7 +230,7 @@ build of it and then install it with `dnf`:
 ```
 $ ssh -p 5555 ${_ssh_opts} -i id_rsa root@127.0.0.3
 # updatelocalrepo
-# dnf -y install foo
+# dnf --enablerepo local -y install foo
 ```
 
 Now you can test freshly installed `foo` on your virtual machine. If you change
