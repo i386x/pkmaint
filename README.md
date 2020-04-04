@@ -186,8 +186,6 @@ pkmaint_basepackages:
   - diffutils
   - findutils
   - gawk
-  - gcc
-  - gcc-c++
   - grep
   - gzip
   - info
@@ -200,6 +198,8 @@ pkmaint_basepackages:
   - tar
   - unzip
   - util-linux
+  - vim
+  - wget
   - which
   - xz
 ```
