@@ -10,11 +10,11 @@
     enabled: "{{ item.enabled | default(true) }}"
     state: present
   when:
-    - 'name' in item
+    - "'name' in item"
 
 - name: Initialize repository from package
   package:
     name: "{{ item.package }}"
     state: present
   when:
-    - 'package' in item
+    - "'package' in item"
