@@ -31,6 +31,29 @@ pkmaint_basearch: null
 # "fedora-{{ pkmaint_releasever }}-{{ pkmaint_basearch }}"):
 pkmaint_mock_config: null
 
+# List of profiles to be generated to /etc/mock. The structure of one item is
+# following:
+#
+#   pkmaint_mock_profiles:
+#     - name: "a name of profile under /etc/mock, e.g fedora-32-x86_64"
+#       config_opts:
+#         # mock config_opts dict key-value pairs, supported are:
+#         chroot_setup_cmd: "..."
+#         root: "..."
+#         target_arch: "..."
+#         dist: "..."
+#         releasever: "..."
+#         package_manager: "(default is dnf)"
+#       package_manager_conf: >
+#         a name of package manager config (defaul is dnf.conf)
+#       module_platform_id: "module_platform_id value in package_manager_conf"
+#       # List of repositories in package_manager_conf
+#       repos:
+#         - name: "..."
+#           baseurl: "..."
+#
+pkmaint_mock_profiles: []
+
 # List of dictionaries characterizing OS image related repositories; a keys
 # in a dictionary has same meaning as their equivalents from yum_repository
 # module; example with all supported keys:

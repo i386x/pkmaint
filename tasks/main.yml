@@ -57,6 +57,14 @@
   when:
     - __pkmaint_packages | union(pkmaint_custompackages) | length > 0
 
+- name: Create mock profiles
+  template:
+    dest: /etc/mock/{{ item.name }}.conf
+    src: "{{ __pkmaint_mockprofile }}.j2"
+    force: yes
+    backup: yes
+  loop: "{{ pkmaint_mock_profiles }}"
+
 - name: Create user accounts
   include_tasks: create_users.yml
   loop: "{{

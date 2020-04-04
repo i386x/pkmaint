@@ -5,6 +5,7 @@ __pkmaint_envvar_imagevarsfile: VMCFG_ANSIBLE_VARS
 __pkmaint_packages:
   - mock
   - createrepo
+__pkmaint_mockprofile: mockprofile
 __pkmaint_mockuser: mocker
 __pkmaint_localrepo: local
 __pkmaint_localreporoot: /local_repo
