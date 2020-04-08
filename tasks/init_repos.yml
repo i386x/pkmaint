@@ -7,7 +7,12 @@
     description: "{{ item.description | default(item.name) }}"
     baseurl: "{{ item.baseurl }}"
     gpgcheck: "{{ item.gpgcheck | default(false) }}"
+    gpgkey: "{{ item.gpgkey | default(omit) }}"
     enabled: "{{ item.enabled | default(true) }}"
+    repo_gpgcheck: "{{ item.repo_gpgcheck | default(omit) }}"
+    skip_if_unavailable: "{{ item.skip_if_unavailable | default(omit) }}"
+    protect: "{{ item.protect | default(omit) }}"
+    priority: "{{ item.priority | default(omit) }}"
     state: present
   when:
     - "'name' in item"

@@ -59,7 +59,12 @@ pkmaint_mock_profiles: []
 #       description: "My repository"
 #       baseurl: "https://repocloud.foo/MyRepo"
 #       gpgcheck: no
+#       gpgkey: https://keycloud.foo/foo/pubkey.gpg
 #       enabled: yes
+#       repo_gpgcheck: no
+#       skip_if_unavailable: yes
+#       protect: yes
+#       priority: 2
 #
 # Repositories can be also installed from packages. To do this, use 'package'
 # key:
