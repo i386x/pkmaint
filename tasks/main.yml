@@ -57,6 +57,16 @@
   when:
     - __pkmaint_packages | union(pkmaint_custompackages) | length > 0
 
+- name: Enable passwordless sudo
+  lineinfile:
+    dest: /etc/sudoers
+    regexp: "^%wheel"
+    line: "%wheel	ALL=(ALL)	NOPASSWD: ALL"
+    state: present
+    validate: "visudo -cf %s"
+  when:
+    - pkmaint_passwordless_sudo
+
 - name: Create mock profiles
   template:
     dest: /etc/mock/{{ item.name }}.cfg

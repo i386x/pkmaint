@@ -101,6 +101,10 @@ pkmaint_customrepos: []
 # List of additional packages:
 pkmaint_custompackages: []
 
+# When set to true, the members of wheel group will not be requested by sudo to
+# type their password:
+pkmaint_passwordless_sudo: false
+
 # List of users to be created. One item can be either string or dictionary.
 # Strings are treated as user names, dictionaries can contain following keys:
 #
