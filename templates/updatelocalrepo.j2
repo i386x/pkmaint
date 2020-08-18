@@ -3,9 +3,11 @@
 
 set -euxo pipefail
 
-cp -vf /home/{{ __pkmaint_mockuser_fact }}/{{ __pkmaint_pkgsdirname }}/*.rpm {{
-  __pkmaint_localreporoot }}/{{ pkmaint_distro }}/{{ pkmaint_releasever }}/{{
-  __pkmaint_localrepo_fact }}/{{ pkmaint_basearch }}/{{
-  __pkmaint_pkgsdirname }}
-createrepo {{ __pkmaint_localreporoot }}/{{ pkmaint_distro }}/{{
-  pkmaint_releasever }}/{{ __pkmaint_localrepo_fact }}/{{ pkmaint_basearch }}
+cp -vf /home/{{ pkmaint_mockuser | default(__pkmaint_mockuser, true) }}/{{
+  __pkmaint_pkgsdirname }}/*.rpm {{ __pkmaint_localreporoot }}/{{
+  __pkmaint_distinfo_fact.name }}/{{ __pkmaint_distinfo_fact.release }}/{{
+  pkmaint_localrepo | default(__pkmaint_localrepo, true) }}/{{
+  __pkmaint_distinfo_fact.basearch }}/{{ __pkmaint_pkgsdirname }}
+createrepo {{ __pkmaint_localreporoot }}/{{ __pkmaint_distinfo_fact.name }}/{{
+  __pkmaint_distinfo_fact.release }}/{{ pkmaint_localrepo | default(
+  __pkmaint_localrepo, true) }}/{{ __pkmaint_distinfo_fact.basearch }}

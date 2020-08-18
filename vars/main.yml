@@ -1,14 +1,40 @@
 # SPDX-License-Identifier: MIT
 ---
 
-__pkmaint_envvar_imagevarsfile: VMCFG_ANSIBLE_VARS
 __pkmaint_packages:
-  - mock
-  - createrepo
-__pkmaint_mockprofile: mockprofile
+  base:
+    - bash
+    - bzip2
+    - coreutils
+    - cpio
+    - diffutils
+    - findutils
+    - gawk
+    - grep
+    - gzip
+    - patch
+    - rpm-build
+    - sed
+    - shadow-utils
+    - tar
+    - unzip
+    - util-linux
+    - wget
+    - which
+    - xz
+  edit:
+    - vim
+  mock:
+    - mock
+  repo:
+    - createrepo
 __pkmaint_mockuser: mocker
-__pkmaint_localrepo: local
-__pkmaint_localreporoot: /local_repo
-__pkmaint_pkgsdirname: Packages
+__pkmaint_mockprofile_template: mockprofile
 __pkmaint_buildscript: build
+__pkmaint_buildscript_template: "{{ __pkmaint_buildscript }}"
+__pkmaint_pkgsdirname: Packages
+__pkmaint_localreporoot: /local_repo
+__pkmaint_localrepo: local
 __pkmaint_updatelocalreposcript: updatelocalrepo
+__pkmaint_updatelocalreposcript_template: "{{ __pkmaint_updatelocalreposcript
+  }}"

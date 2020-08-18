@@ -1,0 +1,26 @@
+# SPDX-License-Identifier: MIT
+---
+
+- name: Install base and system release packages
+  package:
+    name: "{{ __pkmaint_packages.base + [
+      'fedora-release' if __pkmaint_distinfo_fact.name.lower() == 'fedora'
+      else 'redhat-release' ] }}"
+    state: present
+
+- name: Get subjects
+  include_tasks: get_subject.yml
+  loop: "{{ pkmaint_subjects }}"
+
+- name: Create a build script
+  template:
+    dest: "/home/{{ pkmaint_mockuser | default(__pkmaint_mockuser, true) }}/{{
+      pkmaint_buildscript | default(__pkmaint_buildscript, true) }}"
+    src: "{{
+      pkmaint_buildscript_template
+      | default(__pkmaint_buildscript_template, true)
+    }}.j2"
+    mode: 0755
+    group: "{{ pkmaint_mockuser | default(__pkmaint_mockuser, true) }}"
+    owner: "{{ pkmaint_mockuser | default(__pkmaint_mockuser, true) }}"
+    force: yes

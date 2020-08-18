@@ -3,11 +3,11 @@
 
 - name: Create {{ item.name }}.spec
   template:
-    dest: "/home/{{ __pkmaint_mockuser_fact }}/rpmbuild/SPECS/{{ item.name
-      }}.spec"
+    dest: "/home/{{ pkmaint_mockuser | default(__pkmaint_mockuser, true)
+      }}/rpmbuild/SPECS/{{ item.name }}.spec"
     src: "{{ item.name }}.spec.j2"
-    group: "{{ __pkmaint_mockuser_fact }}"
-    owner: "{{ __pkmaint_mockuser_fact }}"
+    group: "{{ pkmaint_mockuser | default(__pkmaint_mockuser, true) }}"
+    owner: "{{ pkmaint_mockuser | default(__pkmaint_mockuser, true) }}"
     force: yes
 
 - name: Get {{ item.name }}'s sources

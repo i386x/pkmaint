@@ -14,9 +14,15 @@ popd
 
 pushd ${HOME}/rpmbuild/SRPMS
 {% for pkg in pkmaint_subjects %}
-mock -N -r {{ pkmaint_mock_config }} --resultdir=${HOME}/rpmbuild/RPMS \
-  --rebuild "{{ pkg.name }}-{{ pkg.version }}-{{ pkg.release
-    }}$(rpm --eval '%{?dist}').src.rpm"
+mock -N -r {{ pkmaint_mock_config | default(
+  (
+    (
+      'fedora' if __pkmaint_distinfo_fact.name.lower() == 'fedora' else 'rhel'
+    ) +
+    '-' + __pkmaint_distinfo_fact.release +
+    '-' + __pkmaint_distinfo_fact.basearch
+  ), true) }} --resultdir=${HOME}/rpmbuild/RPMS --rebuild "{{ pkg.name }}-{{
+  pkg.version }}-{{ pkg.release }}$(rpm --eval '%{?dist}').src.rpm"
 mv -vf ${HOME}/rpmbuild/RPMS/*.rpm ${HOME}/{{ __pkmaint_pkgsdirname }}
 {% endfor %}
 popd

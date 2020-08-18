@@ -34,7 +34,8 @@ config_opts['package_manager'] = '{{ item.config_opts.package_manager }}'
 config_opts['package_manager'] = 'dnf'
 {% endif %}
 {% if 'config_opts' in item and 'dnf_install_command' in item.config_opts %}
-config_opts['dnf_install_command'] = '{{ item.config_opts.dnf_install_command }}'
+config_opts['dnf_install_command'] = '{{ item.config_opts.dnf_install_command
+  }}'
 {% endif %}
 
 {% if 'package_manager_conf' in item %}

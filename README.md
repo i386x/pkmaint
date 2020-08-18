@@ -10,100 +10,37 @@ There are no extra requirements at now.
 ## Role Variables
 
 ```yaml
-# Environment variable that contain a path to a file with image specific
-# variables:
-pkmaint_envvar_imagevarsfile: null
+# General purpose variables
+# =========================
 
-# Variables to be read from file found at location given by enviromnment
-# variable named {{ pkmaint_envvar_imagevarsfile }}. These are OS specific,
-# so they should be placed to file next to the image.
+# A name of task to be performed. Currently supported tasks are:
+#   - set_distinfo
+#   - passwordless_sudo
+#   - create_users
+#   - setup_mock
+#   - setup_build
+#   - create_local_repo
+pkmaint_task: null
 
-# OS image distribution (e.g. Fedora):
-pkmaint_distro: null
+# Task specific variables
+# =======================
 
-# OS image release version number (e.g. 31):
-pkmaint_releasever: null
+# set_distinfo task
+# -----------------
+# Variables:
+#   - pkmaint_distinfo
 
-# OS image architecture (e.g. x86_64):
-pkmaint_basearch: null
+# A dictionary with distribution specific information. It should contains at
+# least following keys:
+#   - name: A name of the distribution (e.g. Fedora)
+#   - release: A release version number of the distribution (e.g. 31)
+#   - basearch: An architecture of the distribution (e.g. x86_64)
+pkmaint_distinfo: null
 
-# mock configuration to be used for building packages (e.g.
-# "fedora-{{ pkmaint_releasever }}-{{ pkmaint_basearch }}"):
-pkmaint_mock_config: null
-
-# List of profiles to be generated to /etc/mock. The structure of one item is
-# following:
-#
-#   pkmaint_mock_profiles:
-#     - name: "a name of profile under /etc/mock, e.g fedora-32-x86_64"
-#       config_opts:
-#         # mock config_opts dict key-value pairs, supported are:
-#         chroot_setup_cmd: "..."
-#         root: "..."
-#         target_arch: "..."
-#         legal_host_arches: "( 'arch1', 'arch2', ... )"
-#         dist: "..."
-#         releasever: "..."
-#         bootstrap_image: "..."
-#         package_manager: "(default is dnf)"
-#         dnf_install_command: "..."
-#       package_manager_conf: >
-#         a name of package manager config (defaul is dnf.conf)
-#       module_platform_id: "module_platform_id value in package_manager_conf"
-#       # List of repositories in package_manager_conf. Name of keys coincides
-#       # with dnf.conf, see man dnf.conf. Supported keys are:
-#       repos:
-#         - name: "..."
-#           baseurl: "..."
-#           module_hotfixes: <boolean>
-#
-pkmaint_mock_profiles: []
-
-# List of dictionaries characterizing OS image related repositories; a keys
-# in a dictionary has same meaning as their equivalents from yum_repository
-# module; example with all supported keys:
-#
-#   pkmaint_baserepos:
-#     - name: MyRepo
-#       description: "My repository"
-#       baseurl: "https://repocloud.foo/MyRepo"
-#       gpgcheck: no
-#       gpgkey: https://keycloud.foo/foo/pubkey.gpg
-#       enabled: yes
-#       repo_gpgcheck: no
-#       skip_if_unavailable: yes
-#       protect: yes
-#       priority: 2
-#
-# Repositories can be also installed from packages. To do this, use 'package'
-# key:
-#
-#   pkmaint_baserepos:
-#     - package: foo-repos
-#
-pkmaint_baserepos: []
-
-# List of basic packages (needed for every build), example:
-#
-#   pkmaint_basepackages:
-#     - gcc
-#     - gcc-c++
-#     - gzip
-#     - xz
-#
-pkmaint_basepackages: []
-
-# Following variables are case specific. They should be placed to playbook.
-
-# List of additional repositories:
-pkmaint_customrepos: []
-
-# List of additional packages:
-pkmaint_custompackages: []
-
-# When set to true, the members of wheel group will not be requested by sudo to
-# type their password:
-pkmaint_passwordless_sudo: false
+# create_users task
+# -----------------
+# Variables:
+#   - pkmaint_users
 
 # List of users to be created. One item can be either string or dictionary.
 # Strings are treated as user names, dictionaries can contain following keys:
@@ -121,11 +58,61 @@ pkmaint_passwordless_sudo: false
 #
 pkmaint_users: []
 
-# A name of user that can run mock:
+# setup_mock task
+# ---------------
+# Variables:
+#   - pkmaint_mockuser
+#   - pkmaint_mockprofile_template
+#   - pkmaint_mock_profiles
+
+# A name of user that can run mock
 pkmaint_mockuser: null
 
+# A name of mock configuration template (without .j2 suffix)
+pkmaint_mockprofile_template: null
+
+# List of profiles to be generated to /etc/mock. The structure of one item is
+# following:
+#
+#   name: "a name of profile under /etc/mock, e.g fedora-32-x86_64"
+#   template: "a name of mock configuration template (without .j2 suffix)"
+#   config_opts:
+#     # mock config_opts dict key-value pairs, supported are:
+#     chroot_setup_cmd: "..."
+#     root: "..."
+#     target_arch: "..."
+#     legal_host_arches: "( 'arch1', 'arch2', ... )"
+#     dist: "..."
+#     releasever: "..."
+#     bootstrap_image: "..."
+#     package_manager: "(default is dnf)"
+#     dnf_install_command: "..."
+#   package_manager_conf: >
+#     a name of package manager config (defaul is dnf.conf)
+#   module_platform_id: "module_platform_id value in package_manager_conf"
+#   repos:
+#     # List of repositories in package_manager_conf. Name of keys coincides
+#     # with dnf.conf, see man dnf.conf. An example of one item with all
+#     # supported keys is:
+#     - name: "..."
+#       baseurl: "..."
+#       module_hotfixes: true or false
+#
+pkmaint_mock_profiles: []
+
+# setup_build task
+# ----------------
+# Prerequisites:
+#   - set_distinfo
+# Variables:
+#   - pkmaint_subjects
+#   - pkmaint_mockuser
+#   - pkmaint_buildscript
+#   - pkmaint_buildscript_template
+#   - pkmaint_mock_config
+
 # A list of subjects for building/testing. One subject describe a package to be
-# build, installed, and tested. The structure of subject is
+# build, installed, and tested. The structure of one subject item is
 #
 #   - name: "package_name"
 #     version: "package_version"
@@ -133,7 +120,7 @@ pkmaint_mockuser: null
 #     sources: [] # a list of sources, see below
 #     patches: [] # a list of patches
 #
-# Sources are represented as list of dictionaries, each dictionary provides
+# Sources are represented as a list of dictionaries, each dictionary provides
 # information how to get the final source. The structure of one source item is
 #
 #   - source: "URL, path or other; depends on 'type'"
@@ -163,15 +150,36 @@ pkmaint_mockuser: null
 #
 pkmaint_subjects: []
 
-# A name of local repository:
-pkmaint_localrepo: null
-
-# A name of build script that is generated into mock user's home directory:
+# A name of build script that is generated into mock user's home directory
 pkmaint_buildscript: null
 
+# A name of build script template (without .j2 suffix)
+pkmaint_buildscript_template: null
+
+# mock configuration to be used for building packages (e.g.
+# "fedora-{{ release }}-{{ basearch }}")
+pkmaint_mock_config: null
+
+# create_local_repo task
+# ----------------------
+# Prerequisites:
+#   - set_distinfo
+# Variables:
+#   - pkmaint_localrepo
+#   - pkmaint_updatelocalreposcript
+#   - pkmaint_updatelocalreposcript_template
+#   - pkmaint_mockuser
+
+# A name of local repository
+pkmaint_localrepo: null
+
 # A name of script that updates local repository (created on guest). It is
-# installed to /usr/local/bin:
+# installed to /usr/local/bin
 pkmaint_updatelocalreposcript: null
+
+# A name of template (without .j2 suffix) of script that updates local
+# repository
+pkmaint_updatelocalreposcript_template: null
 ```
 
 ## Dependencies
@@ -180,37 +188,38 @@ There are no dependencies on other Ansible roles at now.
 
 ## Example Playbook
 
-Suppose you have `~/.images/Fedora-31-x86_64.qcow2` image. First, create a file
-`~/.images/Fedora-31-x86_64.yml` with image specific variables:
+Suppose you have `~/.images/Fedora-31-x86_64.qcow2` image. First, create an
+image setup playbook `~/.images/Fedora-31-x86_64.yml`:
 ```yaml
-pkmaint_distro: Fedora
-pkmaint_releasever: 31
-pkmaint_basearch: x86_64
-pkmaint_mock_config: fedora-{{ pkmaint_releasever }}-{{ pkmaint_basearch }}
-pkmaint_basepackages:
-  - bash
-  - bzip2
-  - coreutils
-  - cpio
-  - diffutils
-  - findutils
-  - gawk
-  - grep
-  - gzip
-  - info
-  - make
-  - patch
-  - redhat-rpm-config
-  - rpm-build
-  - sed
-  - shadow-utils
-  - tar
-  - unzip
-  - util-linux
-  - vim
-  - wget
-  - which
-  - xz
+- name: Setup image
+  hosts: all
+  vars:
+    distribution: Fedora
+    release: 31
+    architecture: x86_64
+
+  tasks:
+    - name: Setup distribution info
+      import_role:
+        name: pkmaint
+      vars:
+        pkmaint_task: set_distinfo
+        pkmaint_distinfo:
+          name: "{{ distribution }}"
+          release: "{{ release }}"
+          basearch: "{{ architecture }}"
+
+    - name: Allow passwordless sudo
+      import_role:
+        name: pkmaint
+      vars:
+        pkmaint_task: passwordless_sudo
+
+    - name: Setup mock environment
+      import_role:
+        name: pkmaint
+      vars:
+        pkmaint_task: setup_mock
 ```
 
 Next, you can create `setup.yml` playbook:
@@ -223,20 +232,28 @@ Next, you can create `setup.yml` playbook:
     foo_release: 7
     foo_tarball: "{{ foo_name }}-{{ foo_version }}.tar.gz"
 
-    pkmaint__envvar_imagevarsfile: IMAGE_VARS_FILE
-    pkmaint_subjects:
-      - name: "{{ foo_name }}"
-        version: "{{ foo_version }}"
-        release: "{{ foo_release }}"
-        sources:
-          - source: https://filecloud.foo/{{ foo_name }}/{{ foo_tarball }}
-            type: url
-            creates: "{{ foo_tarball }}"
-        patches:
-          - foo-1.14-fix_segfault.patch
+  tasks:
+    - name: Prepare subjects for building
+      import_role:
+        name: pkmaint
+      vars:
+        pkmaint_task: setup_build
+        pkmaint_subjects:
+          - name: "{{ foo_name }}"
+            version: "{{ foo_version }}"
+            release: "{{ foo_release }}"
+            sources:
+              - source: https://filecloud.foo/{{ foo_name }}/{{ foo_tarball }}
+                type: url
+                creates: "{{ foo_tarball }}"
+            patches:
+              - foo-1.14-fix_segfault.patch
 
-  roles:
-    - pkmaint
+    - name: Create local repository
+      import_role:
+        name: pkmaint
+      vars:
+        pkmaint_task: create_local_repo
 ```
 
 It is supposed that you have also `foo.spec.j2` along with `setup.yml` in your
@@ -247,11 +264,12 @@ reachable at `127.0.0.3:5555` via SSH with private key `id_rsa`, you can now
 run:
 ```
 $ _ssh_opts="-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
-$ IMAGE_VARS_FILE=~/.images/Fedora-31-x86_64.yml ansible-playbook -vv -u root \
+$ ansible-playbook -vv -u root \
     -i 127.0.0.3, -e "{\"ansible_port\": \"5555\",
     \"ansible_ssh_private_key_file\": \"id_rsa\",
     \"ansible_ssh_common_args\": \"${_ssh_opts}\",
-    \"ansible_python_interpreter\": \"/usr/bin/python3\"}" setup.yml
+    \"ansible_python_interpreter\": \"/usr/bin/python3\"}" \
+    ~/.images/Fedora-31-x86_64.yml setup.yml
 ```
 
 After a while, you can SSH to `127.0.0.3:5555` as `mocker` and run `./build` to

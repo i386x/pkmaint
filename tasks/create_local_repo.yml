@@ -1,0 +1,43 @@
+# SPDX-License-Identifier: MIT
+---
+
+- name: Install base and createrepo packages
+  package:
+    name: "{{ __pkmaint_packages.base + __pkmaint_packages.repo }}"
+    state: present
+
+- name: Create local yum based repository tree
+  file:
+    path: "{{ __pkmaint_localreporoot }}/{{ __pkmaint_distinfo_fact.name }}/{{
+      __pkmaint_distinfo_fact.release }}/{{ pkmaint_localrepo | default(
+      __pkmaint_localrepo, true) }}/{{ __pkmaint_distinfo_fact.basearch }}/{{
+      __pkmaint_pkgsdirname }}"
+    mode: o-w+r
+    group: root
+    owner: root
+    state: directory
+
+- name: Create local yum based repository
+  yum_repository:
+    name: "{{ pkmaint_localrepo | default(__pkmaint_localrepo, true) }}"
+    description: Local repository
+    baseurl: "file://{{ __pkmaint_localreporoot }}/{{
+      __pkmaint_distinfo_fact.name }}/{{ __pkmaint_distinfo_fact.release }}/{{
+      pkmaint_localrepo | default(__pkmaint_localrepo, true) }}/{{
+      __pkmaint_distinfo_fact.basearch }}"
+    enabled: no
+    gpgcheck: no
+    priority: 1
+    protect: yes
+    state: present
+    file: "/etc/yum.repos.d/{{ pkmaint_localrepo | default(__pkmaint_localrepo,
+      true) }}.repo"
+
+- name: Create an update local repo script
+  template:
+    dest: "/usr/local/bin/{{ pkmaint_updatelocalreposcript | default(
+      __pkmaint_updatelocalreposcript, true) }}"
+    src: "{{ pkmaint_updatelocalreposcript_template | default(
+      __pkmaint_updatelocalreposcript_template, true) }}.j2"
+    mode: 0755
+    force: yes

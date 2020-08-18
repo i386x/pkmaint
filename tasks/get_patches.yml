@@ -4,8 +4,8 @@
 - name: Copy the patch from host
   copy:
     src: "{{ patch_item }}"
-    dest: "/home/{{ __pkmaint_mockuser_fact }}/rpmbuild/SOURCES/{{ patch_item
-      }}"
-    group: "{{ __pkmaint_mockuser_fact }}"
-    owner: "{{ __pkmaint_mockuser_fact }}"
+    dest: "/home/{{ pkmaint_mockuser | default(__pkmaint_mockuser, true)
+      }}/rpmbuild/SOURCES/{{ patch_item }}"
+    group: "{{ pkmaint_mockuser | default(__pkmaint_mockuser, true) }}"
+    owner: "{{ pkmaint_mockuser | default(__pkmaint_mockuser, true) }}"
     force: yes

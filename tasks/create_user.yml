@@ -1,0 +1,32 @@
+# SPDX-License-Identifier: MIT
+---
+
+- name: Create {{ item.name | default(item) }} user
+  user:
+    name: "{{ item.name | default(item) }}"
+    uid: "{{ item.uid | default(omit) }}"
+    groups: "{{ item.groups | default(omit) }}"
+    append: "{{ item.append | default(omit) }}"
+    state: present
+
+- name: Create .ssh directory at {{ item.name | default(item) }}'s home
+  file:
+    path: "/home/{{ item.name | default(item) }}/.ssh"
+    mode: 0700
+    group: "{{ item.name | default(item) }}"
+    owner: "{{ item.name | default(item) }}"
+    state: directory
+
+- name: Share authorized_keys with {{ item.name | default(item) }}
+  copy:
+    src: /root/.ssh/authorized_keys
+    dest: "/home/{{ item.name | default(item) }}/.ssh/authorized_keys"
+    remote_src: yes
+
+- name: Set {{ item.name | default(item) }}'s authorized_keys proper attributes
+  file:
+    path: "/home/{{ item.name | default(item) }}/.ssh/authorized_keys"
+    mode: 0600
+    group: "{{ item.name | default(item) }}"
+    owner: "{{ item.name | default(item) }}"
+    state: file
