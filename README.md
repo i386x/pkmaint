@@ -20,6 +20,7 @@ There are no extra requirements at now.
 #   - setup_mock
 #   - setup_build
 #   - create_local_repo
+#   - create_image_setup
 pkmaint_task: null
 
 # Task specific variables
@@ -180,6 +181,21 @@ pkmaint_updatelocalreposcript: null
 # A name of template (without .j2 suffix) of script that updates local
 # repository
 pkmaint_updatelocalreposcript_template: null
+
+# create_image_setup task
+# -----------------------
+# Variables:
+#   - pkmaint_imagebase
+#   - pkmaint_image_setup_template
+
+# A name of the qcow2 image without qcow2 extension
+pkmaint_imagebase: null
+
+# A name of the template of the image setup playbook. The possible values are:
+#   - fedora-setup
+#   - rhel-compose-setup
+#   - rhel-released-setup
+pkmaint_image_setup_template: null
 ```
 
 ## Dependencies

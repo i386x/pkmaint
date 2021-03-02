@@ -1,0 +1,32 @@
+# SPDX-License-Identifier: MIT
+---
+
+- name: Setup image
+  hosts: all
+  vars:
+    distribution: Fedora
+    release: {{ release }}
+    architecture: {{ arch }}
+
+  tasks:
+    - name: Setup distribution info
+      import_role:
+        name: pkmaint
+      vars:
+        pkmaint_task: set_distinfo
+        pkmaint_distinfo:
+          name: "{% raw %}{{ distribution }}{% endraw %}"
+          release: "{% raw %}{{ release }}{% endraw %}"
+          basearch: "{% raw %}{{ architecture }}{% endraw %}"
+
+    - name: Allow passwordless sudo
+      import_role:
+        name: pkmaint
+      vars:
+        pkmaint_task: passwordless_sudo
+
+    - name: Setup mock environment
+      import_role:
+        name: pkmaint
+      vars:
+        pkmaint_task: setup_mock

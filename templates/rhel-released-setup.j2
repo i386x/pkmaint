@@ -1,0 +1,80 @@
+# SPDX-License-Identifier: MIT
+---
+
+- name: Setup image
+  hosts: all
+  vars:
+    product: rhel
+    release: {{ release }}
+    distribution: "{% raw %}{{ product.upper() }}-{{ release.split('.')[0]
+      }}{% endraw %}"
+    architecture: {{ arch }}
+    mock_config: "{% raw %}{{ distribution.lower() }}-{{ architecture }}{%
+      endraw %}"
+    baseurl: {{ hub }}
+
+  tasks:
+    - name: Setup distribution info
+      import_role:
+        name: pkmaint
+      vars:
+        pkmaint_task: set_distinfo
+        pkmaint_distinfo:
+          name: "{% raw %}{{ distribution }}{% endraw %}"
+          release: "{% raw %}{{ release }}{% endraw %}"
+          basearch: "{% raw %}{{ architecture }}{% endraw %}"
+
+    - name: Add repositories
+      yum_repository:
+        name: "{% raw %}{{ item }}{% endraw %}"
+        description: "{% raw %}{{ item }}{% endraw %}"
+        baseurl: "{% raw %}{{ baseurl }}/released/{{ distribution }}/{{ release
+          }}/{{ item }}/{{ architecture }}/os/{% endraw %}"
+        enabled: yes
+        gpgcheck: no
+        state: present
+      loop:
+        - BaseOS
+        - AppStream
+        - CRB
+
+    - name: Add Buildroot repository
+      yum_repository:
+        name: Buildroot
+        description: Buildroot
+        baseurl: "{% raw %}{{ baseurl }}/released/BUILDROOT-{{
+          release.split('.')[0] }}/{{ release }}/Buildroot/{{ architecture
+          }}/os/{% endraw %}"
+        enabled: yes
+        gpgcheck: no
+        state: present
+
+    - name: Add EPEL {% raw %}{{ release.split('.')[0] }}{% endraw
+        %} repository
+      package:
+        name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-{% raw
+          %}{{ release.split('.')[0] }}{% endraw %}.noarch.rpm
+        state: present
+
+    - name: Allow passwordless sudo
+      import_role:
+        name: pkmaint
+      vars:
+        pkmaint_task: passwordless_sudo
+
+    - name: Create mock profiles
+      import_role:
+        name: pkmaint
+      vars:
+        pkmaint_task: setup_mock
+        pkmaint_mock_profiles:
+          - name: "{% raw %}{{ mock_config }}{% endraw %}"
+            config_opts:
+              chroot_setup_cmd: groupinstall build
+              root: "{% raw %}{{ mock_config }}{% endraw %}"
+              target_arch: "{% raw %}{{ architecture }}{% endraw %}"
+            repos:
+              - name: build
+                baseurl: "{% raw %}{{ baseurl }}/brewroot/repos/rhel-{{ release
+                  }}-build/latest/{{ architecture }}/{% endraw %}"
+                module_hotfixes: 1

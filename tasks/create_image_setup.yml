@@ -1,0 +1,9 @@
+# SPDX-License-Identifier: MIT
+---
+
+- name: Create {{ pkmaint_imagebase }}.yml
+  template:
+    dest: "{{ pkmaint_imagebase }}.yml"
+    src: "{{ pkmaint_image_setup_template }}.j2"
+    mode: 0664
+  delegate_to: localhost

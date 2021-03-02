@@ -1,0 +1,80 @@
+# SPDX-License-Identifier: MIT
+---
+
+- name: Setup image
+  hosts: all
+  vars:
+    product: rhel
+    release: {{ release }}
+    distribution: "{% raw %}{{ product.upper() }}-{{ release.split('.')[0]
+      }}{% endraw %}"
+    composeid:
+      rhel: "{% raw %}{{ product.upper() }}-{{ release.split('-')[0]
+        }}{% endraw %}-{{ composever }}"
+      buildroot: BUILDROOT-{% raw %}{{ release.split('-')[0] }}-{{ distribution
+        }}{% endraw %}-{{ composever }}
+    architecture: {{ arch }}
+    mock_config: "{% raw %}{{ distribution.lower() }}-{{ architecture }}{%
+      endraw %}"
+    baseurl: {{ hub }}
+
+  tasks:
+    - name: Setup distribution info
+      import_role:
+        name: pkmaint
+      vars:
+        pkmaint_task: set_distinfo
+        pkmaint_distinfo:
+          name: "{% raw %}{{ distribution }}{% endraw %}"
+          release: "{% raw %}{{ release }}{% endraw %}"
+          basearch: "{% raw %}{{ architecture }}{% endraw %}"
+
+    - name: Add repositories
+      yum_repository:
+        name: "{% raw %}{{ item }}{% endraw %}"
+        description: "{% raw %}{{ item }}{% endraw %}"
+        baseurl: "{% raw %}{{ baseurl }}/{{ distribution.lower() }}/composes/{{
+          distribution }}/{{ composeid.rhel }}/compose/{{ item }}/{{
+          architecture }}/os/{% endraw %}"
+        enabled: yes
+        gpgcheck: no
+        state: present
+      loop:
+        - BaseOS
+        - AppStream
+        - CRB
+
+    - name: Add Buildroot repository
+      yum_repository:
+        name: Buildroot
+        description: Buildroot
+        baseurl: "{% raw %}{{ baseurl }}/{{ distribution.lower()
+          }}/composes/BUILDROOT-{{ release.split('.')[0] }}/{{
+          composeid.buildroot }}/compose/Buildroot/{{ architecture }}/os/{%
+          endraw %}"
+        enabled: yes
+        gpgcheck: no
+        state: present
+
+    - name: Allow passwordless sudo
+      import_role:
+        name: pkmaint
+      vars:
+        pkmaint_task: passwordless_sudo
+
+    - name: Create mock profiles
+      import_role:
+        name: pkmaint
+      vars:
+        pkmaint_task: setup_mock
+        pkmaint_mock_profiles:
+          - name: "{% raw %}{{ mock_config }}{% endraw %}"
+            config_opts:
+              chroot_setup_cmd: groupinstall build
+              root: "{% raw %}{{ mock_config }}{% endraw %}"
+              target_arch: "{% raw %}{{ architecture }}{% endraw %}"
+            repos:
+              - name: build
+                baseurl: "{% raw %}{{ baseurl }}/brewroot/repos/rhel-{{ release
+                  }}-build/latest/{{ architecture }}/{% endraw %}"
+                module_hotfixes: 1
