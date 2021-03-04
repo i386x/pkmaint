@@ -82,22 +82,13 @@
         gpgcheck: no
         state: present
 
-    - name: Add EPEL repository
-      block:
-        - name: Try to add EPEL {% raw %}{{ release.split('.')[0] }}{% endraw
-            %} repository
-          package:
-            name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-{%
-              raw %}{{ release.split('.')[0] }}{% endraw %}.noarch.rpm
-            state: present
-      rescue:
-        - name: Fallback to EPEL {% raw %}{{ (release.split('.')[0] | int) - 1
-            }}{% endraw %} repository
-          package:
-            name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-{%
-              raw %}{{ (release.split('.')[0] | int) - 1 }}{% endraw
-              %}.noarch.rpm
-            state: present
+    - name: Add RCMTOOLS repository
+      get_url:
+        url: "{% raw %}{{ baseurl }}/rel-eng/RCMTOOLS/rcm-tools-rhel-{{
+          release.split('.')[0] }}-baseos.repo{% endraw %}"
+        dest: "/etc/yum.repos.d/rcm-tools-rhel-{% raw %}{{
+          release.split('.')[0] }}{% endraw %}-baseos.repo"
+        mode: 0644
 
     - name: Allow passwordless sudo
       import_role:
