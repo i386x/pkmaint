@@ -91,11 +91,11 @@
               raw %}{{ release.split('.')[0] }}{% endraw %}.noarch.rpm
             state: present
       rescue:
-        - name: Fallback to EPEL {% raw %}{{ (release.split('.')[0] | int) - 1)
+        - name: Fallback to EPEL {% raw %}{{ (release.split('.')[0] | int) - 1
             }}{% endraw %} repository
           package:
             name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-{%
-              raw %}{{ (release.split('.')[0] | int) -1 }}{% endraw
+              raw %}{{ (release.split('.')[0] | int) - 1 }}{% endraw
               %}.noarch.rpm
             state: present
 
