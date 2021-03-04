@@ -40,7 +40,7 @@
 
     - name: Add source repositories
       yum_repository:
-        name: {% raw %}source-{{ item }}{% endraw %}
+        name: "{% raw %}source-{{ item }}{% endraw %}"
         description: "{% raw %}{{ item }} source{% endraw %}"
         baseurl: "{% raw %}{{ baseurl }}/released/{{ distribution }}/{{ release
           }}/{{ item }}/source/tree/{% endraw %}"

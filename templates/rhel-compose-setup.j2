@@ -46,7 +46,7 @@
 
     - name: Add source repositories
       yum_repository:
-        name: {% raw %}source-{{ item }}{% endraw %}
+        name: "{% raw %}source-{{ item }}{% endraw %}"
         description: "{% raw %}{{ item }} source{% endraw %}"
         baseurl: "{% raw %}{{ baseurl }}/{{ distribution.lower() }}/composes/{{
           distribution }}/{{ composeid.rhel }}/compose/{{ item
