@@ -44,6 +44,21 @@
         - AppStream
         - CRB
 
+    - name: Add source repositories
+      yum_repository:
+        name: {% raw %}source-{{ item }}{% endraw %}
+        description: "{% raw %}{{ item }} source{% endraw %}"
+        baseurl: "{% raw %}{{ baseurl }}/{{ distribution.lower() }}/composes/{{
+          distribution }}/{{ composeid.rhel }}/compose/{{ item
+          }}/source/tree/{% endraw %}"
+        enabled: yes
+        gpgcheck: no
+        state: present
+      loop:
+        - BaseOS
+        - AppStream
+        - CRB
+
     - name: Add Buildroot repository
       yum_repository:
         name: Buildroot
@@ -55,6 +70,34 @@
         enabled: yes
         gpgcheck: no
         state: present
+
+    - name: Add Buildroot source repository
+      yum_repository:
+        name: source-Buildroot
+        description: Buildroot source
+        baseurl: "{% raw %}{{ baseurl }}/{{ distribution.lower()
+          }}/composes/BUILDROOT-{{ release.split('.')[0] }}/{{
+          composeid.buildroot }}/compose/Buildroot/source/tree/{% endraw %}"
+        enabled: yes
+        gpgcheck: no
+        state: present
+
+    - name: Add EPEL repository
+      block:
+        - name: Try to add EPEL {% raw %}{{ release.split('.')[0] }}{% endraw
+            %} repository
+          package:
+            name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-{%
+              raw %}{{ release.split('.')[0] }}{% endraw %}.noarch.rpm
+            state: present
+      rescue:
+        - name: Fallback to EPEL {% raw %}{{ (release.split('.')[0] | int) - 1)
+            }}{% endraw %} repository
+          package:
+            name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-{%
+              raw %}{{ (release.split('.')[0] | int) -1 }}{% endraw
+              %}.noarch.rpm
+            state: present
 
     - name: Allow passwordless sudo
       import_role:
