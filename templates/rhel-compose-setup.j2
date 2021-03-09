@@ -46,7 +46,7 @@
 
     - name: Add source repositories
       yum_repository:
-        name: "{% raw %}source-{{ item }}{% endraw %}"
+        name: "{% raw %}{{ item }}-source{% endraw %}"
         description: "{% raw %}{{ item }} source{% endraw %}"
         baseurl: "{% raw %}{{ baseurl }}/{{ distribution.lower() }}/composes/{{
           distribution }}/{{ composeid.rhel }}/compose/{{ item
@@ -73,7 +73,7 @@
 
     - name: Add Buildroot source repository
       yum_repository:
-        name: source-Buildroot
+        name: Buildroot-source
         description: Buildroot source
         baseurl: "{% raw %}{{ baseurl }}/{{ distribution.lower()
           }}/composes/BUILDROOT-{{ release.split('.')[0] }}/{{
