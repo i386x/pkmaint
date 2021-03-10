@@ -195,6 +195,12 @@ pkmaint_imagebase: null
 #   - fedora-setup
 #   - rhel-compose-setup
 #   - rhel-released-setup
+# To tell image setup whether to install mock or not, define with_mock extra
+# variable. The default value of with_mock variable differs per image setup,
+# more precisely:
+#   - fedora-setup: true
+#   - rhel-compose-setup: false
+#   - rhel-released-setup: true
 pkmaint_image_setup_template: null
 ```
 

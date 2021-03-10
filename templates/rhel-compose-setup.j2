@@ -89,12 +89,16 @@
         dest: "/etc/yum.repos.d/rcm-tools-rhel-{% raw %}{{
           release.split('.')[0] }}{% endraw %}-baseos.repo"
         mode: 0644
+      when:
+        - with_mock | default(false, true)
 
     - name: Allow passwordless sudo
       import_role:
         name: pkmaint
       vars:
         pkmaint_task: passwordless_sudo
+      when:
+        - with_mock | default(false, true)
 
     - name: Create mock profiles
       import_role:
@@ -112,3 +116,5 @@
                 baseurl: "{% raw %}{{ baseurl }}/brewroot/repos/rhel-{{ release
                   }}-build/latest/{{ architecture }}/{% endraw %}"
                 module_hotfixes: 1
+      when:
+        - with_mock | default(false, true)

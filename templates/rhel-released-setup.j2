@@ -80,12 +80,16 @@
         name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-{% raw
           %}{{ release.split('.')[0] }}{% endraw %}.noarch.rpm
         state: present
+      when:
+        - with_mock | default(true, true)
 
     - name: Allow passwordless sudo
       import_role:
         name: pkmaint
       vars:
         pkmaint_task: passwordless_sudo
+      when:
+        - with_mock | default(true, true)
 
     - name: Create mock profiles
       import_role:
@@ -103,3 +107,5 @@
                 baseurl: "{% raw %}{{ baseurl }}/brewroot/repos/rhel-{{ release
                   }}-build/latest/{{ architecture }}/{% endraw %}"
                 module_hotfixes: 1
+      when:
+        - with_mock | default(true, true)

@@ -24,9 +24,13 @@
         name: pkmaint
       vars:
         pkmaint_task: passwordless_sudo
+      when:
+        - with_mock | default(true, true)
 
     - name: Setup mock environment
       import_role:
         name: pkmaint
       vars:
         pkmaint_task: setup_mock
+      when:
+        - with_mock | default(true, true)
