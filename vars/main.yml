@@ -13,6 +13,7 @@ __pkmaint_packages:
     - grep
     - gzip
     - patch
+    - rpm
     - rpm-build
     - sed
     - shadow-utils
@@ -28,6 +29,8 @@ __pkmaint_packages:
     - mock
   repo:
     - createrepo
+  abidiff:
+    - libabigail
 __pkmaint_mockuser: mocker
 __pkmaint_mockprofile_template: mockprofile
 __pkmaint_buildscript: build

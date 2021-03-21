@@ -21,6 +21,7 @@ There are no extra requirements at now.
 #   - setup_build
 #   - create_local_repo
 #   - create_image_setup
+#   - toolbox
 pkmaint_task: null
 
 # Task specific variables
@@ -202,6 +203,20 @@ pkmaint_imagebase: null
 #   - rhel-compose-setup: false
 #   - rhel-released-setup: true
 pkmaint_image_setup_template: null
+
+# toolbox task
+# ------------
+# Variables:
+#   - pkmaint_tool
+
+# A dictionary that specifies which tool should be available on the remote. It
+# contains following keys:
+#   - name (mandatory): a name of the tool
+#
+# At now, following tools are supported:
+#   - abidiff: a script that compares two shared objects for their ABI
+#              compatibility (shared objects are taken from provided RPMs)
+pkmaint_tool: null
 ```
 
 ## Dependencies

@@ -1,0 +1,72 @@
+#!/bin/bash
+# SPDX-License-Identifier: MIT
+
+set --euxo pipefail
+
+ME="$(basename "${0}")"
+WD="$(date "+${ME}-%Y%m%d%H%M%S")"
+WD="${PWD}/${WD}"
+
+function error() {
+  echo $* >&2
+  exit 1
+}
+
+function warn()
+  echo -e "\e[33;1m$*\e[0m" >&1
+}
+
+function get_rpm() {
+  (
+    cd "${2}"
+    wget "${1}" >&2 || return $?
+    { rpm2cpio "${1##*/}" | cpio -idmv; } >&2
+    rm -f "${1##*/}"
+  )
+}
+
+function get_rpms() {
+  local _hub="${1%/*}"
+  local _rpm="${1##*/}"
+  local _name=""
+  local _rest=""
+  local _url=""
+
+  if [[ "${_rpm}" =~ ^(.*)(-[^-]+-[^-]+)$ ]]; then
+    _name="${BASH_REMATCH[1]}"
+    _rest="${BASH_REMATCH[2]}"
+  else
+    error "Invalid RPM name: ${_rpm}"
+  fi
+
+  get_rpm "$@"
+  shift
+  for _x in devel debuginfo debugsource; do
+    _url="${_hub}/${_name}-${_x}${_rest}"
+    get_rpm "${_url}" "$@" || warn "${_name}-${_x}${_rest} not found"
+  done
+}
+
+function run_abidiff() {
+  (
+    cd "${1}"
+    abidiff \
+      --debug-info-dir1 a/usr/lib/debug \
+      --debug-info-dir2 b/usr/lib/debug \
+      --headers-dir1 a/usr/include \
+      --headers-dir2 b/usr/include \
+      "a/usr/lib64/${2}" "b/usr/lib64/${3}"
+  )
+}
+
+trap "rm -rf ${WD}" ABRT EXIT HUP INT QUIT
+
+[[ "${4:-}" ]] || error "Usage: ${ME} RPMURL1 RPMURL2 SO1 SO2"
+
+mkdir -p "${WD}/a"
+mkdir -p "${WD}/b"
+
+get_rpms "${1}" "${WD}/a"
+get_rpms "${2}" "${WD}/b"
+
+run_abidiff "${WD}" "${3}" "${4}"

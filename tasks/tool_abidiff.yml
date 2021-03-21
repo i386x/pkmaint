@@ -1,0 +1,13 @@
+# SPDX-License-Identifier: MIT
+---
+
+- name: Install abidiff
+  package:
+    name: "{{ __pkmaint_packages.base + __pkmaint_packages.abidiff }}"
+    state: present
+
+- name: Copy abidiff script to the remote
+  copy:
+    src: abidiff
+    dest: "{{ ansible_user_dir }}/abidiff"
+    mode: 0755

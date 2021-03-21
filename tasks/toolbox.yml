@@ -1,0 +1,8 @@
+# SPDX-License-Identifier: MIT
+---
+
+- name: Install tool from the toolbox
+  include_tasks: "tool_{{ pkmaint_tool.name }}.yml"
+  when:
+    - pkmaint_tool is defined
+    - pkmaint_tool.name is defined
