@@ -81,7 +81,7 @@
           %}{{ release.split('.')[0] }}{% endraw %}.noarch.rpm
         state: present
       when:
-        - with_mock | default(true, true)
+        - with_mock | default(true)
 
     - name: Allow passwordless sudo
       import_role:
@@ -89,7 +89,7 @@
       vars:
         pkmaint_task: passwordless_sudo
       when:
-        - with_mock | default(true, true)
+        - with_mock | default(true)
 
     - name: Create mock profiles
       import_role:
@@ -108,4 +108,4 @@
                   }}-build/latest/{{ architecture }}/{% endraw %}"
                 module_hotfixes: 1
       when:
-        - with_mock | default(true, true)
+        - with_mock | default(true)

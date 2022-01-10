@@ -90,7 +90,7 @@
           release.split('.')[0] }}{% endraw %}-baseos.repo"
         mode: 0644
       when:
-        - with_mock | default(false, true)
+        - with_mock | default(false)
 
     - name: Allow passwordless sudo
       import_role:
@@ -98,7 +98,7 @@
       vars:
         pkmaint_task: passwordless_sudo
       when:
-        - with_mock | default(false, true)
+        - with_mock | default(false)
 
     - name: Create mock profiles
       import_role:
@@ -117,4 +117,4 @@
                   }}-build/latest/{{ architecture }}/{% endraw %}"
                 module_hotfixes: 1
       when:
-        - with_mock | default(false, true)
+        - with_mock | default(false)
